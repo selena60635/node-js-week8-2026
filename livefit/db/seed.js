@@ -30,6 +30,64 @@ async function main() {
   //     （TypeORM 會自動取出它的 id 填進外鍵），寫法範例：
   //      courseRepo.save({ name: '...', user: 教練物件, skill: 技能物件 })
   // ======================================================================
+  const skillRepo = dataSource.getRepository('Skill')
+  const userRepo = dataSource.getRepository('User')
+  const courseRepo = dataSource.getRepository('Course')
+
+  const [ skillWeight, skillYoga, skillFlywheel ] = await skillRepo.save([
+    { name: '重訓' },
+    { name: '瑜珈' },
+    { name: '飛輪' },
+  ])
+
+  const [ coachHagrid, coachXiaomei ] = await userRepo.save([{
+    name: '海格教練',
+    email: 'coach1@livefit.tw',
+    role: 'COACH',
+  }, {
+    name: '小美教練',
+    email: 'coach2@livefit.tw',
+    role: 'COACH',
+  }])
+
+  await courseRepo.save([
+    { 
+      name: '肌力入門班', 
+      description: '掌握基礎重訓動作與姿勢，專為健身新手設計。',
+      start_at: '2026-08-10 19:00:00', 
+      end_at: '2026-08-10 20:00:00', 
+      max_participants: 12, 
+      user: coachHagrid, 
+      skill: skillWeight 
+    },
+    { 
+      name: '週末飛輪', 
+      description: '搭配音樂高效燃脂，快速提升心肺耐力與釋放壓力。', 
+      start_at: '2026-08-15 07:00:00', 
+      end_at: '2026-08-15 08:00:00', 
+      max_participants: 10, 
+      user: coachXiaomei, 
+      skill: skillYoga 
+    },
+    { 
+      name: '晨間瑜珈', 
+      description: '透過溫和伸展喚醒全身肌群，注入一整天的平靜活力。', 
+      start_at: '2026-08-20 19:00:00', 
+      end_at: '2026-08-20 20:00:00', 
+      max_participants: 20, 
+      user: coachXiaomei, 
+      skill: skillFlywheel 
+    },
+    { 
+      name: '核心特訓', 
+      description: '強化腰腹與深層肌群，有效改善體態與運動表現。', 
+      start_at: '2026-08-22 10:00:00', 
+      end_at: '2026-08-22 11:00:00', 
+      max_participants: 12, 
+      user: coachHagrid, 
+      skill: skillWeight 
+    },
+  ])
 
   console.log('🌱 seed 完成')
   await dataSource.destroy()
